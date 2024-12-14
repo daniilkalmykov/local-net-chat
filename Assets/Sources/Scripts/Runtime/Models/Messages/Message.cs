@@ -1,4 +1,4 @@
-namespace Sources.Scripts.Runtime.Core.Models.Messages
+namespace Sources.Scripts.Runtime.Models.Messages
 {
     internal sealed class Message : IMessage
     {

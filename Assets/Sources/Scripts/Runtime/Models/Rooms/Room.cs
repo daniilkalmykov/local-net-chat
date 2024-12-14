@@ -1,4 +1,4 @@
-namespace Sources.Scripts.Runtime.Core.Models.Rooms
+namespace Sources.Scripts.Runtime.Models.Rooms
 {
     internal sealed class Room : IRoom
     {
