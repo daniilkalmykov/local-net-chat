@@ -1,3 +1,7 @@
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Assembly-CSharp")]
+
 namespace Sources.Scripts.Runtime.Models.Rooms
 {
     internal sealed class Room : IRoom
@@ -10,5 +14,16 @@ namespace Sources.Scripts.Runtime.Models.Rooms
 
         public string Name { get; }
         public string Owner { get; }
+        public int Participants { get; private set; } = 1;
+       
+        public void Join()
+        {
+            Participants += 1;
+        }
+
+        public void Leave()
+        {
+            Participants -= 1;
+        }
     }
 }

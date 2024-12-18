@@ -4,5 +4,9 @@ namespace Sources.Scripts.Runtime.Models.Rooms
     {
         public string Name { get; }
         public string Owner { get; }
+        public int Participants { get; }
+
+        void Join();
+        void Leave();
     }
 }

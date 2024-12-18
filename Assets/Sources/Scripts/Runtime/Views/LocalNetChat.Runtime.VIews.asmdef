@@ -1,0 +1,17 @@
+{
+    "name": "LocalNetChat.Runtime.VIews",
+    "rootNamespace": "",
+    "references": [
+        "GUID:703f7783d5034b9890747531204b34b6",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
