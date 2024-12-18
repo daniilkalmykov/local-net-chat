@@ -1,3 +1,4 @@
 {
-  "name": "LocalNetChat.Runtime.Presenters.Network"
+  "name": "LocalNetChat.Runtime.Presenters.Network",
+  "references":[ "GUID:19ddcd4a74ed545df919c7958420cc4c" ]
 }
