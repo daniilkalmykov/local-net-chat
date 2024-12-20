@@ -1,8 +1,9 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using UnityEngine;
 
-namespace Sources.Scripts.Runtime.Models.Network
+namespace Sources.Scripts.Runtime.Models.Network.Receivers
 {
     internal sealed class CommandReceiver : ICommandsReceiver, IDisposable
     {
@@ -36,14 +37,14 @@ namespace Sources.Scripts.Runtime.Models.Network
             {
                 var senderEndPoint = new IPEndPoint(IPAddress.Any, 0);
                 var receivedData = _udpClient.EndReceive(result, ref senderEndPoint);
-
-                Received?.Invoke(receivedData);
-
+                
                 _udpClient.BeginReceive(ReceiveCallback, null);
+                
+                Received?.Invoke(receivedData);
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                Debug.LogError(e.Message);
             }
         }
     }

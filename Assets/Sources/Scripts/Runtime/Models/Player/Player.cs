@@ -12,8 +12,6 @@ namespace Sources.Scripts.Runtime.Models.Player
         private readonly IRoomFactoryMethod _roomFactoryMethod;
         private readonly string _name;
 
-        private IRoom _currentRoom;
-
         public Player(IMessageFactoryMethod messageFactoryMethod, string name, IRoomFactoryMethod roomFactoryMethod)
         {
             _messageFactoryMethod = messageFactoryMethod;
@@ -27,34 +25,35 @@ namespace Sources.Scripts.Runtime.Models.Player
         public event Action<IRoom> RoomCreated;
 
         public string Id { get; } = Guid.NewGuid().ToString();
+        public IRoom CurrentRoom { get; private set; }
 
         public void JoinRoom(IRoom room)
         {
-            if (_currentRoom != null)
+            if (CurrentRoom != null)
                 return;
             
-            _currentRoom = room;
-            _currentRoom.Join();
+            CurrentRoom = room;
+            CurrentRoom.Join();
             
             JoinedRoom?.Invoke(room);
         }
 
         public void CreateRoom(string name)
         {
-            _currentRoom = _roomFactoryMethod.Create(name, _name);
-            RoomCreated?.Invoke(_currentRoom);
+            CurrentRoom = _roomFactoryMethod.Create(name, _name);
+            RoomCreated?.Invoke(CurrentRoom);
         }
 
         public void LeaveRoom()
         {
-            LeftRoom?.Invoke(_currentRoom);
-            _currentRoom.Leave();
-            _currentRoom = null;
+            LeftRoom?.Invoke(CurrentRoom);
+            CurrentRoom.Leave();
+            CurrentRoom = null;
         }
 
         public IMessage SendMessage(string messageBody)
         {
-            if (_currentRoom == null)
+            if (CurrentRoom == null)
                 return null;
 
             var message = _messageFactoryMethod.Create(messageBody, _name);
@@ -62,6 +61,11 @@ namespace Sources.Scripts.Runtime.Models.Player
             MessageSent?.Invoke(message);
 
             return message;
+        }
+
+        public override string ToString()
+        {
+            return _name;
         }
     }
 }

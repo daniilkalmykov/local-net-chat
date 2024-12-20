@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Sources.Scripts.Runtime.Models.Network.ModelsToSend;
-using Unity.Plastic.Newtonsoft.Json;
+using Newtonsoft.Json;
 
 namespace Sources.Scripts.Runtime.Models.Network.Services
 {

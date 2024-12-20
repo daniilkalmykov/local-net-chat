@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using Sources.Scripts.Runtime.Models.Network.ModelsToSend;
 using Sources.Scripts.Runtime.Models.Player;
 using Sources.Scripts.Runtime.Models.Rooms;
+using UnityEngine;
 
 [assembly: InternalsVisibleTo("Assembly-CSharp")]
 
@@ -27,8 +28,9 @@ namespace Sources.Scripts.Runtime.Models.Network.Services.RoomServices
 
         public bool CreateRoom(IRoom room)
         {
-            var modelToSend = new ModelToSend<RoomModelToSend>(Command.CreateRoom, new RoomModelToSend(room, _player.Id));
-
+            var modelToSend =
+                new ModelToSend<RoomModelToSend>(Command.CreateRoom, new RoomModelToSend(room, _player.Id));
+            
             return Send(modelToSend);
         }
 

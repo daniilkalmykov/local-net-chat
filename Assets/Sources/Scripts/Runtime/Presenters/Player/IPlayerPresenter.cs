@@ -5,7 +5,7 @@ namespace Sources.Scripts.Runtime.Presenters.Player
     public interface IPlayerPresenter
     {
         void CreateRoom(string name);
-        void JoinRoom(IRoom room);
+        void JoinRoom(string id);
         void LeaveRoom();
         void SendMessage(string body);
     }

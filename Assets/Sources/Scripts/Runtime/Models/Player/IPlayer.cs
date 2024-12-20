@@ -12,6 +12,7 @@ namespace Sources.Scripts.Runtime.Models.Player
         event Action<IRoom> RoomCreated;
         
         string Id { get; }
+        IRoom CurrentRoom { get;  }
 
         void JoinRoom(IRoom room);
         void CreateRoom(string name);

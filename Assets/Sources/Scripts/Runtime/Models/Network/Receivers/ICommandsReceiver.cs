@@ -1,6 +1,6 @@
 using System;
 
-namespace Sources.Scripts.Runtime.Models.Network
+namespace Sources.Scripts.Runtime.Models.Network.Receivers
 {
     public interface ICommandsReceiver
     {

@@ -1,5 +1,6 @@
+using System;
+using Sources.Scripts.Runtime.Models.Lobby;
 using Sources.Scripts.Runtime.Models.Player;
-using Sources.Scripts.Runtime.Models.Rooms;
 
 namespace Sources.Scripts.Runtime.Presenters.Player
 {
@@ -8,10 +9,12 @@ namespace Sources.Scripts.Runtime.Presenters.Player
         //TODO: Update Ui after every subscription to event
         
         private readonly IPlayer _player;
+        private readonly ILobby _lobby;
 
-        public PlayerPresenter(IPlayer player)
+        public PlayerPresenter(IPlayer player, ILobby lobby)
         {
             _player = player;
+            _lobby = lobby;
         }
 
         public void CreateRoom(string name)
@@ -19,9 +22,14 @@ namespace Sources.Scripts.Runtime.Presenters.Player
             _player.CreateRoom(name);
         }
 
-        public void JoinRoom(IRoom room)
+        public void JoinRoom(string id)
         {
-            _player.JoinRoom(room);
+            var roomById = _lobby.GetRoomById(id);
+
+            if (roomById == null)
+                throw new Exception($"Couldn't get room by id. Id = {id}");
+            
+            _player.JoinRoom(roomById);
         }
 
         public void LeaveRoom()

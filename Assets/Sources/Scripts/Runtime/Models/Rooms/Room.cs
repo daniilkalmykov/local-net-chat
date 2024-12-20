@@ -1,7 +1,7 @@
+using System;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Assembly-CSharp")]
-
 namespace Sources.Scripts.Runtime.Models.Rooms
 {
     internal sealed class Room : IRoom
@@ -12,6 +12,7 @@ namespace Sources.Scripts.Runtime.Models.Rooms
             Owner = owner;
         }
 
+        public string Id { get; } = Guid.NewGuid().ToString();
         public string Name { get; }
         public string Owner { get; }
         public int Participants { get; private set; } = 1;
