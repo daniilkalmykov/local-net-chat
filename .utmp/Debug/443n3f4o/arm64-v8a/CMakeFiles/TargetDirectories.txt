@@ -1,0 +1,8 @@
+/Users/daniilkalmykov/Documents/GitHub/local-net-chat/.utmp/Debug/443n3f4o/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/daniilkalmykov/Documents/GitHub/local-net-chat/.utmp/Debug/443n3f4o/arm64-v8a/CMakeFiles/rebuild_cache.dir
+/Users/daniilkalmykov/Documents/GitHub/local-net-chat/.utmp/Debug/443n3f4o/arm64-v8a/GameActivity/CMakeFiles/game.dir
+/Users/daniilkalmykov/Documents/GitHub/local-net-chat/.utmp/Debug/443n3f4o/arm64-v8a/GameActivity/CMakeFiles/edit_cache.dir
+/Users/daniilkalmykov/Documents/GitHub/local-net-chat/.utmp/Debug/443n3f4o/arm64-v8a/GameActivity/CMakeFiles/rebuild_cache.dir
+/Users/daniilkalmykov/Documents/GitHub/local-net-chat/.utmp/Debug/443n3f4o/arm64-v8a/FramePacing/CMakeFiles/swappywrapper.dir
+/Users/daniilkalmykov/Documents/GitHub/local-net-chat/.utmp/Debug/443n3f4o/arm64-v8a/FramePacing/CMakeFiles/edit_cache.dir
+/Users/daniilkalmykov/Documents/GitHub/local-net-chat/.utmp/Debug/443n3f4o/arm64-v8a/FramePacing/CMakeFiles/rebuild_cache.dir

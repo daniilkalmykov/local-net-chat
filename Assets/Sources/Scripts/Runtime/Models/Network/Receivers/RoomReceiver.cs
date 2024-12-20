@@ -18,7 +18,7 @@ namespace Sources.Scripts.Runtime.Models.Network.Receivers
             if (modelToSend.Value.PlayerId == _player.Id)
                 return false;
 
-            if (modelToSend.Value.Id != _player.CurrentRoom.Id)
+            if (modelToSend.Value.Id != _player.CurrentRoom?.Id)
                 return false;
 
             Debug.LogError($"Notification: Player {_player} joined room");

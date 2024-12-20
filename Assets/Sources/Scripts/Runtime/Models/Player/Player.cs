@@ -3,6 +3,7 @@ using Sources.Scripts.Runtime.Models.Factories.FactoryMethods.MessageFactoryMeth
 using Sources.Scripts.Runtime.Models.Factories.FactoryMethods.RoomFactoryMethods;
 using Sources.Scripts.Runtime.Models.Messages;
 using Sources.Scripts.Runtime.Models.Rooms;
+using UnityEngine;
 
 namespace Sources.Scripts.Runtime.Models.Player
 {
@@ -40,6 +41,7 @@ namespace Sources.Scripts.Runtime.Models.Player
 
         public void CreateRoom(string name)
         {
+            Debug.LogError("Create");
             CurrentRoom = _roomFactoryMethod.Create(name, _name);
             RoomCreated?.Invoke(CurrentRoom);
         }

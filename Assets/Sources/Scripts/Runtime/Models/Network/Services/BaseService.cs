@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using Sources.Scripts.Runtime.Models.Network.ModelsToSend;
 using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Sources.Scripts.Runtime.Models.Network.Services
 {
@@ -27,6 +28,8 @@ namespace Sources.Scripts.Runtime.Models.Network.Services
 
                 _udpClient.Send(jsonToSend, jsonToSend.Length, _endPoint);
 
+                Debug.LogError(json);
+                
                 return true;
             }
             catch (Exception e)

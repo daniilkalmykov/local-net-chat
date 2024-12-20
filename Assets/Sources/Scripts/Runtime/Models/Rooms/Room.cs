@@ -10,9 +10,17 @@ namespace Sources.Scripts.Runtime.Models.Rooms
         {
             Name = name;
             Owner = owner;
+            Id = Guid.NewGuid().ToString();
+        }
+        
+        public Room(string name, string owner, string id)
+        {
+            Name = name;
+            Owner = owner;
+            Id = id;
         }
 
-        public string Id { get; } = Guid.NewGuid().ToString();
+        public string Id { get; }
         public string Name { get; }
         public string Owner { get; }
         public int Participants { get; private set; } = 1;

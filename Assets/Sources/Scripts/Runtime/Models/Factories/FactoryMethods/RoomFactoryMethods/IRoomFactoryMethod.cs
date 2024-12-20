@@ -4,6 +4,6 @@ namespace Sources.Scripts.Runtime.Models.Factories.FactoryMethods.RoomFactoryMet
 {
     public interface IRoomFactoryMethod
     {
-        IRoom Create(string name, string owner);
+        IRoom Create(string name, string owner, string id = "");
     }
 }

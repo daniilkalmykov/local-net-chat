@@ -1,5 +1,3 @@
-using Sources.Scripts.Runtime.Models.Rooms;
-
 namespace Sources.Scripts.Runtime.Presenters.Player
 {
     public interface IPlayerPresenter

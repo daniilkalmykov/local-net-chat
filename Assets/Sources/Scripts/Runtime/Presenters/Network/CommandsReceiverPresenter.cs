@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Sources.Scripts.Runtime.Models.Network;
 using Sources.Scripts.Runtime.Models.Network.ModelsToSend;
@@ -12,6 +11,7 @@ using Sources.Scripts.Runtime.Models.Factories.FactoryMethods.MonoBehaviourFacto
 using Sources.Scripts.Runtime.Models.Factories.FactoryMethods.RoomFactoryMethods;
 using Sources.Scripts.Runtime.Models.Lobby;
 using Sources.Scripts.Runtime.Models.Player;
+using Sources.Scripts.Runtime.Views.Notifications;
 using Sources.Scripts.Runtime.Views.Rooms;
 using UnityEngine;
 
@@ -28,9 +28,11 @@ namespace Sources.Scripts.Runtime.Presenters.Network
         private readonly IMonoBehaviourFactoryMethod _monoBehaviourFactoryMethod;
         private readonly ILobby _lobby;
         private readonly IPlayer _player;
+        private readonly INotificationView _notificationView;
 
         public CommandsReceiverPresenter(ICommandsReceiver commandsReceiver, IRoomReceiver roomReceiver,
-            IRoomFactoryMethod roomFactoryMethod, IMonoBehaviourFactoryMethod monoBehaviourFactoryMethod, ILobby lobby, IPlayer player)
+            IRoomFactoryMethod roomFactoryMethod, IMonoBehaviourFactoryMethod monoBehaviourFactoryMethod, ILobby lobby,
+            IPlayer player, INotificationView notificationView)
         {
             _commandsReceiver = commandsReceiver;
             _roomReceiver = roomReceiver;
@@ -38,6 +40,7 @@ namespace Sources.Scripts.Runtime.Presenters.Network
             _monoBehaviourFactoryMethod = monoBehaviourFactoryMethod;
             _lobby = lobby;
             _player = player;
+            _notificationView = notificationView;
         }
 
         public void Start()
@@ -57,7 +60,6 @@ namespace Sources.Scripts.Runtime.Presenters.Network
             try
             {
                 var json = Encoding.UTF8.GetString(data);
-
                 var modelToSend = JsonConvert.DeserializeObject<ModelToSend<RoomModelToSend>>(json);
 
                 if (modelToSend != null)
@@ -68,20 +70,16 @@ namespace Sources.Scripts.Runtime.Presenters.Network
                     {
                         case (int)Command.JoinRoom:
                         {
-                            if (_roomReceiver.JoinRoom(modelToSend) == false)
-                                return;
-
+                            await JoinRoom(modelToSend);
                             break;
                         }
                         case (int)Command.LeftRoom:
                             break;
                         case (int)Command.SendMessage:
-                            //mess if player has the same room
                             break;
                         case (int)Command.CreateRoom:
                         {
                             await CreateRoom(modelToSend);
-                            
                             break;
                         }
                     }
@@ -102,7 +100,7 @@ namespace Sources.Scripts.Runtime.Presenters.Network
             if (_roomReceiver.CreateRoom(modelToSend) == false)
                 return;
 
-            var room = _roomFactoryMethod.Create(modelToSend.Value.Name, modelToSend.Value.Owner);
+            var room = _roomFactoryMethod.Create(modelToSend.Value.Name, modelToSend.Value.Owner, modelToSend.Value.Id);
             var roomView = await _monoBehaviourFactoryMethod.CreateInMainThread<IRoomView>();
 
             _lobby.AddRoom(room);
@@ -113,6 +111,21 @@ namespace Sources.Scripts.Runtime.Presenters.Network
             roomView.Init(room.Id, _player, _lobby);
             roomView.TurnOn();
             roomView.Display(room.Name);
+        }
+
+        private async UniTask JoinRoom(ModelToSend<RoomModelToSend> modelToSend)
+        {
+            await UniTask.SwitchToMainThread();
+
+            if (_roomReceiver.JoinRoom(modelToSend) == false)
+                return;
+
+            _notificationView.TurnOn();
+            _notificationView.Notify($"Player {modelToSend.Value.PlayerId} joined room");
+
+            await UniTask.Delay(TimeSpan.FromSeconds(1));
+
+            _notificationView.TurnOff();
         }
     }
 }

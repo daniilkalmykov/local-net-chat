@@ -1,13 +1,13 @@
-using System;
 using Sources.Scripts.Runtime.Models.Lobby;
 using Sources.Scripts.Runtime.Models.Player;
+using UnityEngine;
 
 namespace Sources.Scripts.Runtime.Presenters.Player
 {
     public sealed class PlayerPresenter : IPlayerPresenter
     {
         //TODO: Update Ui after every subscription to event
-        
+
         private readonly IPlayer _player;
         private readonly ILobby _lobby;
 
@@ -27,7 +27,10 @@ namespace Sources.Scripts.Runtime.Presenters.Player
             var roomById = _lobby.GetRoomById(id);
 
             if (roomById == null)
-                throw new Exception($"Couldn't get room by id. Id = {id}");
+            {
+                Debug.LogError($"Couldn't get room by id. Id = {id}");
+                return;
+            }
             
             _player.JoinRoom(roomById);
         }

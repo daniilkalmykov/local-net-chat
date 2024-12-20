@@ -4,9 +4,9 @@ namespace Sources.Scripts.Runtime.Models.Factories.FactoryMethods.RoomFactoryMet
 {
     internal sealed class RoomFactoryMethod : IRoomFactoryMethod
     {
-        public IRoom Create(string name, string owner)
+        public IRoom Create(string name, string owner, string id = "")
         {
-            return new Room(name, owner);
+            return string.IsNullOrEmpty(id) ? new Room(name, owner) : new Room(name, owner, id);
         }
     }
 }
