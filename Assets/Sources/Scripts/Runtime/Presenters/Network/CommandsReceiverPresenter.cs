@@ -97,6 +97,9 @@ namespace Sources.Scripts.Runtime.Presenters.Network
 
         private async UniTask CreateRoom(ModelToSend<RoomModelToSend> modelToSend)
         {
+            if (_lobby.GetRoomById(modelToSend.Value.Id) != null)
+                return;
+            
             if (_roomReceiver.CreateRoom(modelToSend) == false)
                 return;
 
@@ -123,7 +126,7 @@ namespace Sources.Scripts.Runtime.Presenters.Network
             _notificationView.TurnOn();
             _notificationView.Notify($"Player {modelToSend.Value.PlayerId} joined room");
 
-            await UniTask.Delay(TimeSpan.FromSeconds(1));
+            await UniTask.Delay(TimeSpan.FromSeconds(4));
 
             _notificationView.TurnOff();
         }

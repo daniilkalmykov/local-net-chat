@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using Sources.Scripts.Runtime.Models.Network.Services.RoomServices;
 using Sources.Scripts.Runtime.Models.Player;
 using Sources.Scripts.Runtime.Models.Rooms;
@@ -35,6 +36,18 @@ namespace Sources.Scripts.Runtime.Presenters.Network
         {
             if (_roomService.CreateRoom(room) == false)
                 _player.LeaveRoom();
+            else
+                AnnounceRoom(room).Forget();
+        }
+
+        private async UniTask AnnounceRoom(IRoom room)
+        {
+            while (_player.CurrentRoom == room || _player.CurrentRoom != null)
+            {
+                _roomService.CreateRoom(room);
+
+                await UniTask.Delay(TimeSpan.FromSeconds(3));
+            }
         }
     }
 }
