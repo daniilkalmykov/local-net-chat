@@ -41,6 +41,9 @@ namespace Sources.Scripts.Runtime.Models.Player
 
         public void CreateRoom(string name)
         {
+            if (CurrentRoom != null)
+                return;
+            
             Debug.LogError("Create");
             CurrentRoom = _roomFactoryMethod.Create(name, _name);
             RoomCreated?.Invoke(CurrentRoom);
