@@ -19,10 +19,10 @@ namespace Sources.Scripts.Runtime.Views.Rooms
             _name.text = roomName;
         }
 
-        public void Init(string id, IPlayer player, ILobby lobby)
+        public void Init(string id, IPlayerPresenter playerPresenter)
         {
             _id = id;
-            _playerPresenter = new PlayerPresenter(player, lobby);
+            _playerPresenter = playerPresenter;
         }
 
         protected override void OnClick()

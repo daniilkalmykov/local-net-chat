@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Sources.Scripts.Runtime.Models.Factories.FactoryMethods.MonoBehaviourFactoryMethods;
 using Sources.Scripts.Runtime.Models.Messages;
@@ -11,12 +12,13 @@ using UnityEngine;
 
 namespace Sources.Scripts.Runtime.Presenters.Network
 {
-    internal sealed class CommandsSenderPresenter : ICommandsSenderPresenter, IDisposable
+    internal sealed class CommandsSenderPresenter : ICommandsSenderPresenter
     {
         private readonly IRoomService _roomService;
         private readonly IPlayer _player;
         private readonly IMessageService _messageService;
         private readonly IMonoBehaviourFactoryMethod _messageViewFactoryMethod;
+        private readonly CancellationTokenSource _cancellationTokenSource = new(); 
 
         public CommandsSenderPresenter(IRoomService roomService, IPlayer player, IMessageService messageService,
             IMonoBehaviourFactoryMethod messageViewFactoryMethod)
@@ -25,17 +27,24 @@ namespace Sources.Scripts.Runtime.Presenters.Network
             _player = player;
             _messageService = messageService;
             _messageViewFactoryMethod = messageViewFactoryMethod;
+        }
 
+        public void Start()
+        {
             _player.JoinedRoom += OnJoinedRoom;
             _player.RoomCreated += OnRoomCreated;
             _player.MessageSent += OnMessageSent;
             _player.LeftRoom += OnLeftRoom;
         }
 
-        public void Dispose()
+        public void End()
         {
+            _cancellationTokenSource?.Cancel();
+            
             _player.JoinedRoom -= OnJoinedRoom;
             _player.RoomCreated -= OnRoomCreated;
+            _player.MessageSent -= OnMessageSent;
+            _player.LeftRoom -= OnLeftRoom;
         }
 
         private void OnJoinedRoom(IRoom room)
@@ -49,22 +58,21 @@ namespace Sources.Scripts.Runtime.Presenters.Network
             if (_roomService.CreateRoom(room) == false)
                 _player.LeaveRoom();
             else
-                AnnounceRoom(room).Forget();
+                AnnounceRoom(room).AttachExternalCancellation(_cancellationTokenSource.Token).Forget();
         }
 
         private void OnLeftRoom(IRoom room)
         {
             if (_roomService.LeaveRoom(room) == false)
                 _player.JoinRoom(room);
+
+            _cancellationTokenSource?.Cancel();
         }
         
         private async void OnMessageSent(IMessage message)
         {
             if (_messageService.SentMessage(message) == false)
-            {
-                Debug.LogError("Failed sending message");
                 return;
-            }
 
             var messageView = await _messageViewFactoryMethod.CreateInMainThread<IMessageView>();
 
@@ -73,9 +81,9 @@ namespace Sources.Scripts.Runtime.Presenters.Network
 
         private async UniTask AnnounceRoom(IRoom room)
         {
-            while (_player.CurrentRoom == room || _player.CurrentRoom != null)
+            while (true)
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(5));
+                await UniTask.Delay(TimeSpan.FromSeconds(3));
 
                 _roomService.CreateRoom(room);
             }

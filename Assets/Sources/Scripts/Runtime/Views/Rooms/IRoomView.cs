@@ -1,11 +1,10 @@
-using Sources.Scripts.Runtime.Models.Lobby;
-using Sources.Scripts.Runtime.Models.Player;
+using Sources.Scripts.Runtime.Presenters.Player;
 
 namespace Sources.Scripts.Runtime.Views.Rooms
 {
     public interface IRoomView : IView
     {
         void Display(string roomName);
-        void Init(string id, IPlayer player, ILobby lobby);
+        void Init(string id, IPlayerPresenter playerPresenter);
     }
 }

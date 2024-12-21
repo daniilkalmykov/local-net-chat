@@ -1,10 +1,12 @@
+using System.Runtime.CompilerServices;
 using Sources.Scripts.Runtime.Models.Lobby;
 using Sources.Scripts.Runtime.Models.Player;
 using UnityEngine;
 
+[assembly: InternalsVisibleTo("Assembly-CSharp")]
 namespace Sources.Scripts.Runtime.Presenters.Player
 {
-    public sealed class PlayerPresenter : IPlayerPresenter
+    internal sealed class PlayerPresenter : IPlayerPresenter
     {
         private readonly IPlayer _player;
         private readonly ILobby _lobby;

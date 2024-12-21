@@ -1,4 +1,4 @@
 {
   "name": "LocalNetChat.Runtime.Presenters.Network",
-  "references":[ "GUID:19ddcd4a74ed545df919c7958420cc4c", "LocalNetChat.Runtime.Models.Network", "GUID:f0fcf5b33e224dda9b6943b137894547", "GUID:f51ebe6a0ceec4240a699833d6309b23" ]
+  "references":[ "GUID:19ddcd4a74ed545df919c7958420cc4c", "LocalNetChat.Runtime.Models.Network", "GUID:f0fcf5b33e224dda9b6943b137894547", "GUID:f51ebe6a0ceec4240a699833d6309b23", "GUID:703f7783d5034b9890747531204b34b6" ]
 }

@@ -1090,7 +1090,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2aa12afb310b4e5493be4a64b5f493ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _prefab: {fileID: 880838427}
+  _room: {fileID: 880838427}
   _parent: {fileID: 1960950830}
   _position: {fileID: 1960950830}
   _notificationView: {fileID: 630132029}
@@ -1100,9 +1100,8 @@ MonoBehaviour:
   _messageViewPrefab: {fileID: 2196582749302160568, guid: 044799b3094884c7cbc1c48d7ac47568, type: 3}
   _messageParent: {fileID: 114046932}
   _leaveRoomButtonView: {fileID: 1163330267}
-  remoteIP: 127.0.0.1
-  remotePort: 7777
-  localPort: 7778
+  _messagesLimit: 6
+  _remoteIP: 127.0.0.1
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0

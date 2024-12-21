@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Sources.Scripts.Runtime.Models.Network;
 using Sources.Scripts.Runtime.Models.Network.ModelsToSend;
@@ -13,11 +12,10 @@ using Sources.Scripts.Runtime.Models.Factories.FactoryMethods.MonoBehaviourFacto
 using Sources.Scripts.Runtime.Models.Factories.FactoryMethods.RoomFactoryMethods;
 using Sources.Scripts.Runtime.Models.Lobby;
 using Sources.Scripts.Runtime.Models.Messages;
-using Sources.Scripts.Runtime.Models.Player;
+using Sources.Scripts.Runtime.Presenters.Player;
 using Sources.Scripts.Runtime.Views.Messages;
 using Sources.Scripts.Runtime.Views.Notifications;
 using Sources.Scripts.Runtime.Views.Rooms;
-using UnityEngine;
 
 [assembly: InternalsVisibleTo("Assembly-CSharp")]
 
@@ -32,24 +30,24 @@ namespace Sources.Scripts.Runtime.Presenters.Network
         private readonly IMonoBehaviourFactoryMethod _monoBehaviourFactoryMethod;
         private readonly IMonoBehaviourFactoryMethod _messageViewFactoryMethod;
         private readonly ILobby _lobby;
-        private readonly IPlayer _player;
         private readonly INotificationView _notificationView;
         private readonly IMessageReceiver _messageReceiver;
+        private readonly IPlayerPresenter _playerPresenter;
 
         public CommandsReceiverPresenter(ICommandsReceiver commandsReceiver, IRoomReceiver roomReceiver,
             IRoomFactoryMethod roomFactoryMethod, IMonoBehaviourFactoryMethod monoBehaviourFactoryMethod, ILobby lobby,
-            IPlayer player, INotificationView notificationView, IMessageReceiver messageReceiver,
-            IMonoBehaviourFactoryMethod messageViewFactoryMethod)
+            INotificationView notificationView, IMessageReceiver messageReceiver,
+            IMonoBehaviourFactoryMethod messageViewFactoryMethod, IPlayerPresenter playerPresenter)
         {
             _commandsReceiver = commandsReceiver;
             _roomReceiver = roomReceiver;
             _roomFactoryMethod = roomFactoryMethod;
             _monoBehaviourFactoryMethod = monoBehaviourFactoryMethod;
             _lobby = lobby;
-            _player = player;
             _notificationView = notificationView;
             _messageReceiver = messageReceiver;
             _messageViewFactoryMethod = messageViewFactoryMethod;
+            _playerPresenter = playerPresenter;
         }
 
         public void Start()
@@ -69,7 +67,6 @@ namespace Sources.Scripts.Runtime.Presenters.Network
             {
                 var json = Encoding.UTF8.GetString(data);
                 var command = JObject.Parse(json).Value<int>(nameof(Command));
-                Debug.LogError(command);
 
                 switch (command)
                 {
@@ -127,7 +124,7 @@ namespace Sources.Scripts.Runtime.Presenters.Network
             if (roomView == null)
                 return;
 
-            roomView.Init(room.Id, _player, _lobby);
+            roomView.Init(room.Id, _playerPresenter);
             roomView.TurnOn();
             roomView.Display(room.Name);
         }
