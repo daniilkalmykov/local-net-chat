@@ -1,16 +1,20 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Sources.Scripts.Runtime.Models.Network;
 using Sources.Scripts.Runtime.Models.Network.ModelsToSend;
 using Sources.Scripts.Runtime.Models.Network.Receivers;
 using Sources.Scripts.Runtime.Models.Network.Services.RoomServices;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Sources.Scripts.Runtime.Models.Factories.FactoryMethods.MonoBehaviourFactoryMethods;
 using Sources.Scripts.Runtime.Models.Factories.FactoryMethods.RoomFactoryMethods;
 using Sources.Scripts.Runtime.Models.Lobby;
+using Sources.Scripts.Runtime.Models.Messages;
 using Sources.Scripts.Runtime.Models.Player;
+using Sources.Scripts.Runtime.Views.Messages;
 using Sources.Scripts.Runtime.Views.Notifications;
 using Sources.Scripts.Runtime.Views.Rooms;
 using UnityEngine;
@@ -26,13 +30,16 @@ namespace Sources.Scripts.Runtime.Presenters.Network
         private readonly IRoomReceiver _roomReceiver;
         private readonly IRoomFactoryMethod _roomFactoryMethod;
         private readonly IMonoBehaviourFactoryMethod _monoBehaviourFactoryMethod;
+        private readonly IMonoBehaviourFactoryMethod _messageViewFactoryMethod;
         private readonly ILobby _lobby;
         private readonly IPlayer _player;
         private readonly INotificationView _notificationView;
+        private readonly IMessageReceiver _messageReceiver;
 
         public CommandsReceiverPresenter(ICommandsReceiver commandsReceiver, IRoomReceiver roomReceiver,
             IRoomFactoryMethod roomFactoryMethod, IMonoBehaviourFactoryMethod monoBehaviourFactoryMethod, ILobby lobby,
-            IPlayer player, INotificationView notificationView)
+            IPlayer player, INotificationView notificationView, IMessageReceiver messageReceiver,
+            IMonoBehaviourFactoryMethod messageViewFactoryMethod)
         {
             _commandsReceiver = commandsReceiver;
             _roomReceiver = roomReceiver;
@@ -41,6 +48,8 @@ namespace Sources.Scripts.Runtime.Presenters.Network
             _lobby = lobby;
             _player = player;
             _notificationView = notificationView;
+            _messageReceiver = messageReceiver;
+            _messageViewFactoryMethod = messageViewFactoryMethod;
         }
 
         public void Start()
@@ -57,49 +66,55 @@ namespace Sources.Scripts.Runtime.Presenters.Network
 
         private async void OnReceived(byte[] data)
         {
-            try
             {
                 var json = Encoding.UTF8.GetString(data);
-                var modelToSend = JsonConvert.DeserializeObject<ModelToSend<RoomModelToSend>>(json);
+                var command = JObject.Parse(json).Value<int>(nameof(Command));
+                Debug.LogError(command);
 
-                if (modelToSend != null)
+                switch (command)
                 {
-                    var command = modelToSend.Command;
-
-                    switch (command)
+                    case (int)Command.JoinRoom:
                     {
-                        case (int)Command.JoinRoom:
-                        {
-                            await JoinRoom(modelToSend);
-                            break;
-                        }
-                        case (int)Command.LeftRoom:
-                            break;
-                        case (int)Command.SendMessage:
-                            break;
-                        case (int)Command.CreateRoom:
-                        {
-                            await CreateRoom(modelToSend);
-                            break;
-                        }
+                        var modelToSend = JsonConvert.DeserializeObject<ModelToSend<RoomModelToSend>>(json);
+                        await JoinRoom(modelToSend);
+                        break;
+                    }
+                    case (int)Command.LeftRoom:
+                        break;
+                    case (int)Command.SendMessage:
+                    {
+                        var modelToSend = JsonConvert.DeserializeObject<ModelToSend<Message>>(json);
+                        await SendMessage(modelToSend.Value);
+                        break;
+                    }
+                    case (int)Command.CreateRoom:
+                    {
+                        var modelToSend = JsonConvert.DeserializeObject<ModelToSend<RoomModelToSend>>(json);
+                        await CreateRoom(modelToSend);
+                        break;
                     }
                 }
-                else
-                {
-                    throw new Exception("Couldn't recognize response");
-                }
             }
-            catch (Exception e)
+        }
+
+        private async UniTask SendMessage(IMessage message)
+        {
+            if (_messageReceiver.SendMessage(message) == false)
             {
-                Debug.LogError(e.Message);
+                Debug.LogError("return");
+                return;
             }
+
+            var messageView = await _messageViewFactoryMethod.CreateInMainThread<IMessageView>();
+
+            messageView.Display(message.Body, message.Sender);
         }
 
         private async UniTask CreateRoom(ModelToSend<RoomModelToSend> modelToSend)
         {
             if (_lobby.GetRoomById(modelToSend.Value.Id) != null)
                 return;
-            
+
             if (_roomReceiver.CreateRoom(modelToSend) == false)
                 return;
 

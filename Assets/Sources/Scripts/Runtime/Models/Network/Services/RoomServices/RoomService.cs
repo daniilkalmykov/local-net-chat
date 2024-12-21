@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 using Sources.Scripts.Runtime.Models.Network.ModelsToSend;
 using Sources.Scripts.Runtime.Models.Player;
 using Sources.Scripts.Runtime.Models.Rooms;
-using UnityEngine;
 
 [assembly: InternalsVisibleTo("Assembly-CSharp")]
 

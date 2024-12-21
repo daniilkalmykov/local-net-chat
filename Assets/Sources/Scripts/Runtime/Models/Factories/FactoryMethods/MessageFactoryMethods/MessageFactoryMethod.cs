@@ -4,9 +4,9 @@ namespace Sources.Scripts.Runtime.Models.Factories.FactoryMethods.MessageFactory
 {
     internal sealed class MessageFactoryMethod : IMessageFactoryMethod
     {
-        public IMessage Create(string body, string owner)
+        public IMessage Create(string body, string owner, string roomId)
         {
-            return new Message(body, owner);
+            return new Message(body, owner, roomId);
         }
     }
 }

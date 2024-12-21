@@ -17,6 +17,6 @@ namespace Sources.Scripts.Runtime.Models.Player
         void JoinRoom(IRoom room);
         void CreateRoom(string name);
         void LeaveRoom();
-        IMessage SendMessage(string messageBody);
+        void SendMessage(string messageBody);
     }
 }

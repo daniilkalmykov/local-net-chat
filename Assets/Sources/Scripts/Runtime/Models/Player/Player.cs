@@ -44,7 +44,6 @@ namespace Sources.Scripts.Runtime.Models.Player
             if (CurrentRoom != null)
                 return;
             
-            Debug.LogError("Create");
             CurrentRoom = _roomFactoryMethod.Create(name, _name);
             RoomCreated?.Invoke(CurrentRoom);
         }
@@ -53,19 +52,18 @@ namespace Sources.Scripts.Runtime.Models.Player
         {
             LeftRoom?.Invoke(CurrentRoom);
             CurrentRoom.Leave();
+            
             CurrentRoom = null;
         }
 
-        public IMessage SendMessage(string messageBody)
+        public void SendMessage(string messageBody)
         {
             if (CurrentRoom == null)
-                return null;
+                return;
 
-            var message = _messageFactoryMethod.Create(messageBody, _name);
+            var message = _messageFactoryMethod.Create(messageBody, Id, CurrentRoom.Id);
 
             MessageSent?.Invoke(message);
-
-            return message;
         }
 
         public override string ToString()

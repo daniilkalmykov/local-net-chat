@@ -6,11 +6,13 @@ using Sources.Scripts.Runtime.Models.Factories.FactoryMethods.MonoBehaviourFacto
 using Sources.Scripts.Runtime.Models.Factories.FactoryMethods.RoomFactoryMethods;
 using Sources.Scripts.Runtime.Models.Lobby;
 using Sources.Scripts.Runtime.Models.Network.Receivers;
+using Sources.Scripts.Runtime.Models.Network.Services.MessageServices;
 using Sources.Scripts.Runtime.Models.Network.Services.RoomServices;
 using Sources.Scripts.Runtime.Models.Player;
-using Sources.Scripts.Runtime.Models.Rooms;
 using Sources.Scripts.Runtime.Presenters.Network;
 using Sources.Scripts.Runtime.Presenters.Player;
+using Sources.Scripts.Runtime.Views.Common;
+using Sources.Scripts.Runtime.Views.Messages;
 using Sources.Scripts.Runtime.Views.Notifications;
 using Sources.Scripts.Runtime.Views.Rooms;
 using UnityEngine;
@@ -24,6 +26,10 @@ namespace Sources.Scripts
         [SerializeField] private Transform _position;
         [SerializeField] private NotificationView _notificationView;
         [SerializeField] private CreateRoomButtonView _createRoomButtonView;
+        [SerializeField] private MessageWindowView _messageWindowView;
+        [SerializeField] private SendMessageButton _sendMessageButton;
+        [SerializeField] private MessageView _messageViewPrefab;
+        [SerializeField] private Transform _messageParent;
         
         public string remoteIP = "127.0.0.1";
         public int remotePort = 7777;
@@ -65,24 +71,24 @@ namespace Sources.Scripts
             _monoBehaviourFactoryMethod = new MonoBehaviourFactoryMethod(_prefab, _position.position, _parent);
             
             var lobby = new Lobby();
+
+            var limitedMonoBehaviourFactoryMethod = new LimitedMonoBehaviourFactoryMethod(_messageViewPrefab.gameObject, _messageParent.position,
+                _messageParent, 6);
             _commandsReceiverPresenter = new CommandsReceiverPresenter(_commandsReceiver, new RoomReceiver(_player),
-                new RoomFactoryMethod(), _monoBehaviourFactoryMethod, lobby, _player, _notificationView);
+                new RoomFactoryMethod(), _monoBehaviourFactoryMethod, lobby, _player, _notificationView,
+                new MessageReceiver(_player),
+                limitedMonoBehaviourFactoryMethod);
             
             _roomService = new RoomService(_udpClient, _remoteEndPoint, _player);
-            ICommandsSenderPresenter commandsSenderPresenter = new CommandsSenderPresenter(_roomService, _player);
+            _ = new CommandsSenderPresenter(_roomService, _player, new MessageService(_udpClient, _remoteEndPoint),
+                limitedMonoBehaviourFactoryMethod);
 
             _createRoomButtonView.Init(new PlayerPresenter(_player, lobby));
-            
+            _messageWindowView.Init(_player);
+
+            _sendMessageButton.Init(new PlayerPresenter(_player, lobby));
             _commandsReceiverPresenter.Start();
             Debug.Log("UDP Peer запущен!");
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.C))
-            {
-                _roomService.CreateRoom(new Room("ABOBA", Application.isEditor ? "EDITOR" : "BUILD"));
-            }
         }
 
         private void OnApplicationQuit()

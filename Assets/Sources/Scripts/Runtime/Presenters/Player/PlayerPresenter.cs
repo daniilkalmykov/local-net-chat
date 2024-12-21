@@ -6,8 +6,6 @@ namespace Sources.Scripts.Runtime.Presenters.Player
 {
     public sealed class PlayerPresenter : IPlayerPresenter
     {
-        //TODO: Update Ui after every subscription to event
-
         private readonly IPlayer _player;
         private readonly ILobby _lobby;
 

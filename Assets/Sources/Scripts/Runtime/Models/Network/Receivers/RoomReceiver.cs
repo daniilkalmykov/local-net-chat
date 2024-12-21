@@ -1,6 +1,5 @@
 using Sources.Scripts.Runtime.Models.Network.ModelsToSend;
 using Sources.Scripts.Runtime.Models.Player;
-using UnityEngine;
 
 namespace Sources.Scripts.Runtime.Models.Network.Receivers
 {
@@ -18,12 +17,7 @@ namespace Sources.Scripts.Runtime.Models.Network.Receivers
             if (modelToSend.Value.PlayerId == _player.Id)
                 return false;
 
-            if (modelToSend.Value.Id != _player.CurrentRoom?.Id)
-                return false;
-
-            Debug.LogError($"Notification: Player {_player} joined room");
-
-            return true;
+            return modelToSend.Value.Id == _player.CurrentRoom?.Id;
         }
 
         public bool LeaveRoom(ModelToSend<RoomModelToSend> modelToSend)
@@ -31,22 +25,12 @@ namespace Sources.Scripts.Runtime.Models.Network.Receivers
             if (modelToSend.Value.PlayerId == _player.Id)
                 return false;
             
-            if (modelToSend.Value.Id != _player.CurrentRoom.Id)
-                return false;
-
-            Debug.LogError($"Notification: Player {_player} left room");
-            
-            return true;
+            return modelToSend.Value.Id == _player.CurrentRoom.Id;
         }
 
         public bool CreateRoom(ModelToSend<RoomModelToSend> modelToSend)
         {
-            if (modelToSend.Value.PlayerId == _player.Id)
-                return false;
-
-            Debug.LogError($"Room {modelToSend.Value.Name} has created");
-            
-            return true;
+            return modelToSend.Value.PlayerId != _player.Id;
         }
     }
 }

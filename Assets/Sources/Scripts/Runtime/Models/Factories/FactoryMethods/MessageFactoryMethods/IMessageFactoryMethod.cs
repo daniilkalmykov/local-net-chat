@@ -4,6 +4,6 @@ namespace Sources.Scripts.Runtime.Models.Factories.FactoryMethods.MessageFactory
 {
     public interface IMessageFactoryMethod
     {
-        IMessage Create(string body, string owner);
+        IMessage Create(string body, string owner, string roomId);
     }
 }
