@@ -12,8 +12,9 @@ namespace Sources.Scripts.Runtime.Views.Common
 
         private void OnDestroy()
         {
+            _player.RoomCreated -= OnJoinedRoom;
             _player.JoinedRoom -= OnJoinedRoom;
-            _player.JoinedRoom -= OnJoinedRoom;
+            _player.LeftRoom -= OnLeftRoom;
         }
 
         public void Init(IPlayer player)
@@ -22,6 +23,7 @@ namespace Sources.Scripts.Runtime.Views.Common
 
             _player.RoomCreated += OnJoinedRoom;
             _player.JoinedRoom += OnJoinedRoom;
+            _player.LeftRoom += OnLeftRoom;
         }
 
         private void OnJoinedRoom(IRoom obj)
@@ -29,6 +31,13 @@ namespace Sources.Scripts.Runtime.Views.Common
             _canvasGroup.alpha = 1;
             _canvasGroup.interactable = true;
             _canvasGroup.blocksRaycasts = true;
+        }
+        
+        private void OnLeftRoom(IRoom obj)
+        {
+            _canvasGroup.alpha = 0;
+            _canvasGroup.interactable = false;
+            _canvasGroup.blocksRaycasts = false;
         }
     }
 }

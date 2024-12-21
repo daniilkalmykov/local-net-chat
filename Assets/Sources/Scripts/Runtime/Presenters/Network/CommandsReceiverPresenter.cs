@@ -80,7 +80,11 @@ namespace Sources.Scripts.Runtime.Presenters.Network
                         break;
                     }
                     case (int)Command.LeftRoom:
+                    {
+                        var modelToSend = JsonConvert.DeserializeObject<ModelToSend<RoomModelToSend>>(json);
+                        await LeaveRoom(modelToSend);
                         break;
+                    }
                     case (int)Command.SendMessage:
                     {
                         var modelToSend = JsonConvert.DeserializeObject<ModelToSend<Message>>(json);
@@ -100,10 +104,7 @@ namespace Sources.Scripts.Runtime.Presenters.Network
         private async UniTask SendMessage(IMessage message)
         {
             if (_messageReceiver.SendMessage(message) == false)
-            {
-                Debug.LogError("return");
                 return;
-            }
 
             var messageView = await _messageViewFactoryMethod.CreateInMainThread<IMessageView>();
 
@@ -140,6 +141,21 @@ namespace Sources.Scripts.Runtime.Presenters.Network
 
             _notificationView.TurnOn();
             _notificationView.Notify($"Player {modelToSend.Value.PlayerId} joined room");
+
+            await UniTask.Delay(TimeSpan.FromSeconds(4));
+
+            _notificationView.TurnOff();
+        }
+
+        private async UniTask LeaveRoom(ModelToSend<RoomModelToSend> modelToSend)
+        {
+            await UniTask.SwitchToMainThread();
+
+            if (_roomReceiver.LeaveRoom(modelToSend) == false)
+                return;
+
+            _notificationView.TurnOn();
+            _notificationView.Notify($"Player {modelToSend.Value.PlayerId} left room");
 
             await UniTask.Delay(TimeSpan.FromSeconds(4));
 

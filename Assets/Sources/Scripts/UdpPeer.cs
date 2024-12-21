@@ -30,6 +30,7 @@ namespace Sources.Scripts
         [SerializeField] private SendMessageButton _sendMessageButton;
         [SerializeField] private MessageView _messageViewPrefab;
         [SerializeField] private Transform _messageParent;
+        [SerializeField] private LeaveRoomButtonView _leaveRoomButtonView;
         
         public string remoteIP = "127.0.0.1";
         public int remotePort = 7777;
@@ -51,19 +52,13 @@ namespace Sources.Scripts
             try
             {
                 _udpClient = new UdpClient(localPort);
-                
-                Debug.Log($"UDP клиент успешно запущен на порту: {localPort}");
-                Debug.Log($"Отправка сообщений будет идти на {remoteIP}:{remotePort}");
             }
             catch (Exception ex)
             {
                 Debug.LogError($"Ошибка инициализации UDP клиента: {ex.Message}");
             }
 
-
-            Debug.Log($"UDP запущен на порту: {localPort}");
-
-            _player = new Player(new MessageFactoryMethod(), Application.isEditor ? "editor" : SystemInfo.deviceName,
+            _player = new Player(new MessageFactoryMethod(), Application.isEditor ? "Editor" : SystemInfo.deviceName,
                 new RoomFactoryMethod());
 
             _remoteEndPoint = new IPEndPoint(IPAddress.Parse(remoteIP), remotePort);
@@ -85,10 +80,10 @@ namespace Sources.Scripts
 
             _createRoomButtonView.Init(new PlayerPresenter(_player, lobby));
             _messageWindowView.Init(_player);
-
+            _leaveRoomButtonView.Init(new PlayerPresenter(_player, lobby));
             _sendMessageButton.Init(new PlayerPresenter(_player, lobby));
+
             _commandsReceiverPresenter.Start();
-            Debug.Log("UDP Peer запущен!");
         }
 
         private void OnApplicationQuit()

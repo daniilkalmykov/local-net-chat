@@ -29,6 +29,7 @@ namespace Sources.Scripts.Runtime.Presenters.Network
             _player.JoinedRoom += OnJoinedRoom;
             _player.RoomCreated += OnRoomCreated;
             _player.MessageSent += OnMessageSent;
+            _player.LeftRoom += OnLeftRoom;
         }
 
         public void Dispose()
@@ -51,6 +52,12 @@ namespace Sources.Scripts.Runtime.Presenters.Network
                 AnnounceRoom(room).Forget();
         }
 
+        private void OnLeftRoom(IRoom room)
+        {
+            if (_roomService.LeaveRoom(room) == false)
+                _player.JoinRoom(room);
+        }
+        
         private async void OnMessageSent(IMessage message)
         {
             if (_messageService.SentMessage(message) == false)
